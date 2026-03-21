@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package ggrpcfix;
+
+// Simple price stream service for demo purposes.
+// This matches the examples in g_grpc-fix.ipynb closely enough that you can
+// generate Python stubs and use them with the notebook.
+
+message PriceRequest {
+  // Symbol identifier, e.g. "BTCUSDT" or "EURUSD".
+  string symbol = 1;
+}
+
+message PriceUpdate {
+  string symbol = 1;
+  double bid = 2;
+  double ask = 3;
+  // Timestamp in microseconds since Unix epoch.
+  int64 ts_micros = 4;
+}
+
+service PriceService {
+  // Server-streaming RPC: client sends one PriceRequest, then receives a
+  // continuous stream of PriceUpdate messages until the server or client
+  // closes the stream.
+  rpc StreamPrices(PriceRequest) returns (stream PriceUpdate);
+}
+
