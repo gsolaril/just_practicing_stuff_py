@@ -1,0 +1,264 @@
+{
+  "Binance": {
+    "base_url": "https://api.binance.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/api/v3/ticker/bookTicker",
+      "args": { "symbol": "symbol" },
+      "mapping": { "bid": ["bidPrice"], "ask": ["askPrice"] }
+    },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/api/v3/klines",
+      "args": { "symbol": "symbol", "interval": "interval", "limit": "limit" },
+      "mapping": { "root": [], "timestamp": [0], "open": [1], "high": [2], "low": [3], "close": [4], "volume": [5] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/api/v3/depth",
+      "args": { "symbol": "symbol", "limit": "limit" },
+      "mapping": { "bids": ["bids"], "asks": ["asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/api/v3/exchangeInfo",
+      "args": {},
+      "mapping": { "root": ["symbols"], "symbol": ["symbol"], "quote_currency": ["quoteAsset"], "base_currency": ["baseAsset"], "point_size": ["quotePrecision"], "min_trade_size": ["filters", 1, "minQty"] }
+    }
+  },
+  "Bybit": {
+    "base_url": "https://api.bybit.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/v5/market/tickers",
+      "args": { "category": "spot", "symbol": "symbol" },
+      "mapping": { "root": ["result", "list"], "bid": ["bid1Price"], "ask": ["ask1Price"] }
+    },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/v5/market/kline",
+      "args": { "category": "spot", "symbol": "symbol", "interval": "interval", "limit": "limit" },
+      "mapping": { "root": ["result", "list"], "timestamp": [0], "open": [1], "high": [2], "low": [3], "close": [4], "volume": [5] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/v5/market/orderbook",
+      "args": { "category": "spot", "symbol": "symbol", "limit": "limit" },
+      "mapping": { "bids": ["result", "b"], "asks": ["result", "a"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/v5/market/instruments-info",
+      "default_symbol": "spot",
+      "args": { "category": "symbol" },
+      "mapping": { "root": ["result", "list"], "symbol": ["symbol"], "quote_currency": ["quoteCoin"], "base_currency": ["baseCoin"], "point_size": ["priceFilter", "tickSize"], "min_trade_size": ["lotSizeFilter", "minOrderQty"] }
+    }
+  },
+  "OKX": {
+    "base_url": "https://www.okx.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1-\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/api/v5/market/ticker",
+      "args": { "instId": "symbol" },
+      "mapping": { "root": ["data"], "bid": ["bidPx"], "ask": ["askPx"] }
+    },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/api/v5/market/candles",
+      "args": { "instId": "symbol", "bar": "interval", "limit": "limit" },
+      "mapping": { "root": ["data"], "timestamp": [0], "open": [1], "high": [2], "low": [3], "close": [4], "volume": [5] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/api/v5/market/books",
+      "args": { "instId": "symbol" },
+      "mapping": { "bids": ["data", 0, "bids"], "asks": ["data", 0, "asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/api/v5/public/instruments",
+      "default_symbol": "SPOT",
+      "args": { "instType": "symbol" },
+      "mapping": { "root": ["data"], "symbol": ["instId"], "quote_currency": ["quoteCcy"], "base_currency": ["baseCcy"], "point_size": ["tickSz"], "min_trade_size": ["minSz"] }
+    }
+  },
+  "Coinbase": {
+    "base_url": "https://api.exchange.coinbase.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1-\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/products/{symbol}/ticker",
+      "args": {},
+      "mapping": { "bid": ["bid"], "ask": ["ask"] }
+    },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/products/{symbol}/candles",
+      "args": { "granularity": "interval" },
+      "mapping": { "root": [], "timestamp": [0], "low": [1], "high": [2], "open": [3], "close": [4], "volume": [5] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/products/{symbol}/book",
+      "args": { "level": 2 },
+      "mapping": { "bids": ["bids"], "asks": ["asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/products",
+      "args": {},
+      "mapping": { "root": [], "symbol": ["id"], "quote_currency": ["quote_currency"], "base_currency": ["base_currency"], "point_size": ["quote_increment"], "min_trade_size": ["base_min_size"] }
+    }
+  },
+  "Kraken": {
+    "base_url": "https://api.kraken.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/0/public/Ticker",
+      "args": { "pair": "symbol" },
+      "mapping": { "bid": ["result", "*FIRST_KEY*", "b", 0], "ask": ["result", "*FIRST_KEY*", "a", 0] }
+    },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/0/public/OHLC",
+      "args": { "pair": "symbol", "interval": "interval" },
+      "mapping": { "root": ["result", "*FIRST_KEY*"], "timestamp": [0], "open": [1], "high": [2], "low": [3], "close": [4], "volume": [6] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/0/public/Depth",
+      "args": { "pair": "symbol" },
+      "mapping": { "bids": ["result", "*FIRST_KEY*", "bids"], "asks": ["result", "*FIRST_KEY*", "asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/0/public/AssetPairs",
+      "args": {},
+      "mapping": { "root": ["result"], "symbol": ["*FIRST_KEY*", "altname"], "quote_currency": ["*FIRST_KEY*", "quote"], "base_currency": ["*FIRST_KEY*", "base"], "point_size": ["*FIRST_KEY*", "pair_decimals"], "min_trade_size": ["*FIRST_KEY*", "ordermin"] }
+    }
+  },
+  "Deribit": {
+    "base_url": "https://www.deribit.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1_\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/api/v2/public/ticker",
+      "args": { "instrument_name": "symbol" },
+      "mapping": { "bid": ["result", "best_bid_price"], "ask": ["result", "best_ask_price"] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/api/v2/public/get_order_book",
+      "args": { "instrument_name": "symbol" },
+      "mapping": { "bids": ["result", "bids"], "asks": ["result", "asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "default_symbol": "BTC",
+      "endpoint_path": "/api/v2/public/get_instruments",
+      "args": { "currency": "symbol", "kind": "future" },
+      "mapping": { "root": ["result"], "symbol": ["instrument_name"], "quote_currency": ["quote_currency"], "base_currency": ["base_currency"], "point_size": ["tick_size"], "min_trade_size": ["min_trade_amount"] }
+    }
+  },
+  "KuCoin": {
+    "base_url": "https://api.kucoin.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1-\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/api/v1/market/orderbook/level1",
+      "args": { "symbol": "symbol" },
+      "mapping": { "bid": ["data", "bestBid"], "ask": ["data", "bestAsk"] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/api/v1/market/orderbook/level2_100",
+      "args": { "symbol": "symbol" },
+      "mapping": { "bids": ["data", "bids"], "asks": ["data", "asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/api/v1/symbols",
+      "args": {},
+      "mapping": { "root": ["data"], "symbol": ["symbol"], "quote_currency": ["quoteCurrency"], "base_currency": ["baseCurrency"], "point_size": ["priceIncrement"], "min_trade_size": ["baseMinSize"] }
+    }
+  },
+  "GateIO": {
+    "base_url": "https://gateio.ws",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1_\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/api/v4/spot/tickers",
+      "args": { "currency_pair": "symbol" },
+      "mapping": { "root": [], "bid": ["highest_bid"], "ask": ["lowest_ask"] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/api/v4/spot/order_book",
+      "args": { "currency_pair": "symbol" },
+      "mapping": { "bids": ["bids"], "asks": ["asks"] }
+    },
+    "symbol_specs": {
+      "method": "GET",
+      "endpoint_path": "/api/v4/spot/currency_pairs",
+      "args": {},
+      "mapping": { "root": [], "symbol": ["id"], "quote_currency": ["quote"], "base_currency": ["base"], "point_size": ["precision"], "min_trade_size": ["min_base_amount"] }
+    }
+  },
+  "CryptoCom": {
+    "base_url": "https://api.crypto.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1_\\2" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/v2/public/get-ticker",
+      "args": { "instrument_name": "symbol" },
+      "mapping": { "root": ["result", "data"], "bid": ["b"], "ask": ["k"] }
+    },
+    "order_book": {
+      "method": "GET",
+      "endpoint_path": "/v2/public/get-book",
+      "args": { "instrument_name": "symbol" },
+      "mapping": { "bids": ["result", "data", 0, "bids"], "asks": ["result", "data", 0, "asks"] }
+    }
+  },
+  "YahooFinance": {
+    "base_url": "https://query1.finance.yahoo.com",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1\\2=X" },
+    "current_price": {
+      "method": "GET",
+      "endpoint_path": "/v7/finance/quote",
+      "args": { "symbols": "symbol" },
+      "mapping": { "root": ["quoteResponse", "result"], "bid": ["bid"], "ask": ["ask"] }
+    },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/v8/finance/chart/{symbol}",
+      "args": { "interval": "interval", "range": "1mo" },
+      "mapping": { "root": ["chart", "result", 0], "timestamp": ["timestamp"], "open": ["indicators", "quote", 0, "open"], "high": ["indicators", "quote", 0, "high"], "low": ["indicators", "quote", 0, "low"], "close": ["indicators", "quote", 0, "close"], "volume": ["indicators", "quote", 0, "volume"] }
+    }
+  },
+  "AlphaVantage": {
+    "base_url": "https://alphavantage.co",
+    "key": "",
+    "symbol_mapping": { "pattern": "([^/]+)/([^/]+)", "replacement": "\\1\\2" },
+    "candlesticks": {
+      "method": "GET",
+      "endpoint_path": "/query",
+      "args": { "function": "TIME_SERIES_INTRADAY", "symbol": "symbol", "interval": "interval", "apikey": "key" },
+      "mapping": { "root": ["Time Series (*INTERVAL*)"], "timestamp": ["*ITERATE_KEYS*"], "open": ["1. open"], "high": ["2. high"], "low": ["3. low"], "close": ["4. close"], "volume": ["5. volume"] }
+    }
+  }
+}
